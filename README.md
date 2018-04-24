@@ -1,2 +1,1 @@
-# Webpack+React+ES6的项目初始化
-下载后直接 npm install 即可
+####对应 express-test 的前端项目
