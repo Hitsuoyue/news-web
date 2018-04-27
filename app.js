@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import HomePage from './src/HomePage';
+import HomePage from './src/pages/HomePage';
 
 class APP extends Component{
     render(){
