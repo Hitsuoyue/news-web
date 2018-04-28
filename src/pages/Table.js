@@ -18,6 +18,17 @@ export default class Table extends Component{
     }
 
     /**
+     * 删除新闻
+     */
+    deleteNews = (e, id) => {
+        console.log(id);
+        service('http://localhost:3000/delete', 'post', {id:id}).then(response => {
+            console.log('response', response);
+            this.props.getDataList();
+        })
+    }
+
+    /**
      * 渲染表格主体
      */
     renderTd = () => {
@@ -34,8 +45,8 @@ export default class Table extends Component{
                         <td>{item.time || ''}</td>
                         <td>{item.src || ''}</td>
                         <td>
-                            <button>edit</button>
-                            <button>delete</button>
+                            <button onClick={e => this.props.modalChange(e, item.id)}>edit</button>
+                            <button onClick={e => this.deleteNews(e, item.id)}>delete</button>
                         </td>
                     </tr>
                 )

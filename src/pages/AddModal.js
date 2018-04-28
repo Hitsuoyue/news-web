@@ -6,27 +6,40 @@ export default class AddModal extends Component{
 
     constructor(props){
         super(props);
+        const data = props.index !== undefined && props.data && props.data[props.index];
+        //todo index=0 ????
         this.state = {
             value: {
-                id: '',
-                type: 'yule',
-                title: '',
-                image: '',
-                time: this.toDateInputValue(),
-                src: ''
+                id: data && data.id || '',
+                type: data && data.type || 'yule',
+                title: data && data.title || '',
+                image: data && data.image || '',
+                time: data && this.toDateInputValue(data.time) || this.toDateInputValue(),
+                src: data && data.src || ''
             }
         }
     }
 
     componentWillReceiveProps(nextprops){
+        //todo 对比
+        const data = nextprops.index && nextprops.data && nextprops.data[nextprops.index];
+        this.setState({
+            value: {
+                id: data && data.id || '',
+                type: data && data.type || 'yule',
+                title: data && data.title || '',
+                image: data && data.image || '',
+                time: data && this.toDateInputValue(data.time) || this.toDateInputValue(),
+                src: data && data.src || ''
+            }
+        })
     }
 
     /**
      * 添加新闻
      */
-    addNews = (e) => {
+    addNews = () => {
         service('http://localhost:3000/insert', 'post', this.state.value).then(response => {
-            console.log('response', response);
             this.props.getDataList();
         })
     }
@@ -35,7 +48,6 @@ export default class AddModal extends Component{
      * 重置模态框数据
      */
     resetModal = () =>{
-        console.log('reset');
         this.setState({
             value: {
                 id: 0,
@@ -63,17 +75,30 @@ export default class AddModal extends Component{
      * 获取当前时间并转换为 input 对应格式
      * @returns {string}
      */
-    toDateInputValue = () => {
-        let local = new Date();
-        local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
-        console.log('local.toJSON().slice(0,10)', local.toJSON().slice(0,10));
-        return local.toJSON().slice(0,10);
+    toDateInputValue = (date) => {
+        if(date){
+            return date.slice(0,10);
+        }else{
+            let local = new Date();
+            local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+            return local.toJSON().slice(0,10);
+        }
     };
+
+    /**
+     * 编辑新闻
+     * @returns {*}
+     */
+    editNews = () => {
+        service('http://localhost:3000/edit', 'post', this.state.value).then(response => {
+            this.props.getDataList();
+        })
+    }
 
     render(){
         const { value } = this.state;
         const { display } = this.props;
-        console.log('display', display);
+
         return(
             <div className='add-modal' style={{display: display || ''}} >
                 <div className='row'>
@@ -107,8 +132,11 @@ export default class AddModal extends Component{
                     <input className='right' type="text" name='src' id='src' onChange={e=>this.onChange(e, 'src')} value={value.src}/>
                 </div>
                 <input type='submit' onClick={this.addNews}/>
+
                 <input type='reset' onClick={this.resetModal}/>
-                <button onClick={this.props.closeModal}>close</button>
+
+                <button onClick={this.editNews}>更新</button>
+                <button onClick={this.props.modalChange}>close</button>
             </div>
         )
     }
