@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { service } from '../../service';
 import Table from './Table';
-import AddModal from "./AddModal";
+import Modal from "./Modal";
 
 export default class HomePage extends Component{
 
@@ -9,7 +9,8 @@ export default class HomePage extends Component{
         super(props);
         this.state = {
             modalVisible: false,
-            currentIndex: undefined
+            currentIndex: undefined,
+            type: 'add'
         };
     }
 
@@ -32,34 +33,38 @@ export default class HomePage extends Component{
         this.getDataList();
     }
 
-    modalChange = (e, id) => {
-        console.log('e', e);
+    /**
+     * 模态框状态改变
+     */
+    modalChange = (e, type, id) => {
         const { modalVisible } = this.state;
         if(id){
-            console.log('data', this.state.data);
             const { data } = this.state;
             const index = data.findIndex(item => item.id === id);
             console.log('index', index);
             this.setState({
                 modalVisible: !modalVisible,
-                currentIndex: index
+                currentIndex: index,
+                type: type
             })
         }else{
             this.setState({
                 modalVisible: !modalVisible,
-                currentIndex: ''
+                currentIndex: '',
+                type: type
             })
         }
     };
 
     render(){
-        const { modalVisible } = this.state;
+        const { modalVisible, type } = this.state;
+        console.log('type------------', type);
         let display = modalVisible ? '' : 'none';
         return(
             <div>HomePage
                 <Table data={this.state.data} getDataList={this.getDataList} modalChange={this.modalChange}/>
-                <button onClick={this.modalChange}>add</button>
-                <AddModal  data={this.state.data} index={this.state.currentIndex} getDataList={this.getDataList} display={display} modalChange={this.modalChange}/>
+                <button onClick={e=>this.modalChange(e, 'add')}>add</button>
+                <Modal type={type} data={this.state.data} index={this.state.currentIndex} getDataList={this.getDataList} display={display} modalChange={this.modalChange}/>
             </div>
         )
     }

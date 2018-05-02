@@ -45,7 +45,7 @@ export default class Table extends Component{
                         <td>{item.time || ''}</td>
                         <td>{item.src || ''}</td>
                         <td>
-                            <button onClick={e => this.props.modalChange(e, item.id)}>edit</button>
+                            <button onClick={e => this.props.modalChange(e, 'edit', item.id)}>edit</button>
                             <button onClick={e => this.deleteNews(e, item.id)}>delete</button>
                         </td>
                     </tr>
